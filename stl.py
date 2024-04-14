@@ -366,10 +366,10 @@ if st.session_state.current_question >= len(questions):
     df = pd.DataFrame(data, columns=["Столбец 1", "Столбец 2", "Столбец 3"])
 
     # Добавляем кнопку для загрузки CSV-файла
-    csv = df.to_csv(index=False)
-    st.download_button(
-        label="Скачать данные в CSV",
-        data=csv,
-        file_name='data.csv',
-        mime='text/csv',
-    )
+    # csv = df.to_csv(index=False)
+    # st.download_button(
+    #     label="Скачать данные в CSV",
+    #     data=csv,
+    #     file_name='data.csv',
+    #     mime='text/csv',
+    # )
