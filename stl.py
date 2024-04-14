@@ -301,7 +301,7 @@ if st.session_state.current_question >= len(questions):
    
     option = {
         "title": {"text": ""},
-        "legend": {"data": ["Проект", "Диплом"]},
+        "legend": {"data": ["Проект", "Диплом", "Сертификат"]},
         "radar": {
             "indicator": [
                 {"name": "Важность", "max": 20},
@@ -327,6 +327,10 @@ if st.session_state.current_question >= len(questions):
                     {
                         "value": [5, 5, 5, 5, 5, 5, 5, 5, 5],
                         "name": "Диплом",
+                    },
+                    {
+                        "value": [10, 10, 10, 10, 10, 10, 10, 10, 10],
+                        "name": "Сертификат",
                     },
                 ],
             }
