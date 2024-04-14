@@ -8,7 +8,7 @@ from streamlit_echarts import st_pyecharts, st_echarts
 
 
 from PIL import Image
-image = Image.open('C:/1/expoelectronica.png')
+image = Image.open('expoelectronica.png')
 
 st.set_page_config(
     page_title="Экспертиза",
