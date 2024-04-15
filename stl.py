@@ -371,7 +371,7 @@ if st.session_state.current_question >= len(questions):
     [dddd[2], dddd[5], dddd[8]]
     ]
 
-    # Вычисляем сумму всех значений в массиве
+     # Вычисляем сумму всех значений в массиве
     total_sum = sum(int(cell) for row in data for cell in row)
     # Вычисляем процентное отношение суммы к числу 180
     percentage = (total_sum / 180) * 100
@@ -391,13 +391,16 @@ if st.session_state.current_question >= len(questions):
     st.markdown(html_table, unsafe_allow_html=True)
 
     # Создаем DataFrame из данных
-    df = pd.DataFrame(data, columns=["Столбец 1", "Столбец 2", "Столбец 3"])
+    df = pd.DataFrame(data, columns=["1", "2", "3"])
 
     # Добавляем кнопку для загрузки CSV-файла
-    # csv = df.to_csv(index=False)
-    # st.download_button(
-    #     label="Скачать данные в CSV",
-    #     data=csv,
-    #     file_name='data.csv',
-    #     mime='text/csv',
-    # )
+    username = st.text_input('Эксперт:')
+    project = st.text_input('Название проекта: ')
+    
+    csv = df.to_csv(index=False)
+    st.download_button(
+        label="Скачать данные в CSV",
+        data=csv,
+        file_name=username + ' ' + project + '.csv',
+        mime='text/csv',
+    )
