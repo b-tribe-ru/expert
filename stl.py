@@ -28,19 +28,43 @@ st.image(image, caption=None, use_column_width=None, clamp=False, channels="RGB"
 if "current_question" not in st.session_state:
     st.session_state.current_question = 0
 
+if 'button' not in st.session_state:
+        st.session_state.button = False
 
 if "answers" not in st.session_state:
     st.session_state.answers = []
 
-
+def click_button():
+    st.session_state.button = not st.session_state.button
 
 # Функция для отображения страницы с вопросом и вариантами ответа
 def display_question_page(question, options, slider_ranges):
     st.header(question)
     if "slider_value" not in st.session_state:
         st.session_state.slider_value = 20 # Установите начальное значение слайдера
-    selected_option = st.radio(label="", options=options, key="selected_option")
-    slider_range = slider_ranges[options.index(selected_option)]
+
+    if "selected_option" not in st.session_state:
+        st.session_state.selected_option = options[0] # Установите первый вариант ответа по умолчанию
+    
+
+    # Создаем пользовательский интерфейс, который будет выглядеть как радиокнопки
+    for option in options:
+        if st.button(option, key=option, on_click=click_button):
+            st.session_state.selected_option = option
+        
+
+
+    # Проверяем, что выбранный вариант существует в списке options
+    if st.session_state.selected_option not in options:
+        #st.error("Выбранный вариант не найден в списке вариантов ответа.")
+        st.session_state.selected_option = options[0]
+        return # Прекращаем выполнение функции
+
+# Создаем слайдер
+    slider_range = slider_ranges[options.index(st.session_state.selected_option)]
+    
+    #selected_option = st.radio(label="", options=options, key="selected_option")
+    #slider_range = slider_ranges[options.index(selected_option)]
     inputuser = st.session_state.slider_value
     if slider_range[0] != slider_range[1]:
         st.session_state.slider_value = st.slider(label="Выберите количество баллов, которым соответствует проект", min_value=slider_range[0], max_value=slider_range[1], value=slider_range[0], step=1)
@@ -57,7 +81,7 @@ def display_question_page(question, options, slider_ranges):
         # Сохраняем выбранный ответ и значение слайдера
         st.session_state.answers.append({
             "question_number": st.session_state.current_question,
-            "selected_option": selected_option,
+            "selected_option": st.session_state.selected_option,
             "slider_value": inputuser
         })
         st.markdown("""
