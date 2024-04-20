@@ -23,13 +23,6 @@ st.set_page_config(
 st.image(image, caption=None, use_column_width=None, clamp=False, channels="RGB", output_format="auto")
 
 
-# Create a connection object.
-conn = st.connection("gsheets", type=GSheetsConnection)
-df = conn.read()
-st.write(st.secrets['connections'])
-# Print results.
-for row in df.itertuples():
-    st.write(f"{row.expert} has a :{row.project}:")
 
 
 # Инициализация st.session_state
