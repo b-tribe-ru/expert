@@ -1,5 +1,4 @@
-streamlit
+streamlit==1.6
 pandas
 pyecharts
 streamlit_echarts
-st-gsheets-connection
