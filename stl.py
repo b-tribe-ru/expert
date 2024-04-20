@@ -5,7 +5,7 @@ from pyecharts import options as opts
 
 from pyecharts.charts import Graph, Line
 from streamlit_echarts import st_pyecharts, st_echarts
-from streamlit_gsheets import GSheetsConnection
+
 
 from PIL import Image
 image = Image.open('expoelectronica.png')
