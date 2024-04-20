@@ -1,4 +1,4 @@
-streamlit==1.6
+streamlit==1.22
 pandas
 pyecharts
 streamlit_echarts
