@@ -1,11 +1,12 @@
 import streamlit as st
 import pandas as pd
-
+from google.oauth2 import service_account
+import gspread
 from pyecharts import options as opts
 
 from pyecharts.charts import Graph, Line
 from streamlit_echarts import st_pyecharts, st_echarts
-
+from streamlit_gsheets import GSheetsConnection
 
 from PIL import Image
 image = Image.open('expoelectronica.png')
@@ -23,6 +24,31 @@ st.set_page_config(
 st.image(image, caption=None, use_column_width=None, clamp=False, channels="RGB", output_format="auto")
 
 
+# Create a connection object.
+credentials = service_account.Credentials.from_service_account_info(
+    st.secrets["gcp_service_account"],
+    scopes=[
+        "https://www.googleapis.com/auth/spreadsheets",
+    ],
+)
+gc = gspread.authorize(credentials)
+
+# Get the Google Sheet by URL.
+sheet_url = st.secrets["private_gsheets_url"]
+sheet = gc.open_by_url(sheet_url)
+
+
+
+
+
+
+# Create a connection object.
+conn = st.connection("gsheets", type=GSheetsConnection)
+df = conn.read()
+
+# Print results.
+for row in df.itertuples():
+    st.write(f"{row.expert} has a :{row.project}:")
 
 
 # Инициализация st.session_state
@@ -398,7 +424,7 @@ if st.session_state.current_question >= len(questions):
     username = st.text_input('Эксперт:')
     project = st.text_input('Название проекта: ')
     
-    csv = df.to_csv(index=False)
+    csv = df.to_csv(index=False).encode('utf-8')
     st.download_button(
         label="Скачать данные в CSV",
         data=csv,
