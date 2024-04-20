@@ -5,7 +5,7 @@ from pyecharts import options as opts
 
 from pyecharts.charts import Graph, Line
 from streamlit_echarts import st_pyecharts, st_echarts
-
+from streamlit_gsheets import GSheetsConnection
 
 from PIL import Image
 image = Image.open('expoelectronica.png')
@@ -22,6 +22,14 @@ st.set_page_config(
 )
 st.image(image, caption=None, use_column_width=None, clamp=False, channels="RGB", output_format="auto")
 
+
+# Create a connection object.
+conn = st.connection("gsheets", type=GSheetsConnection)
+df = conn.read()
+
+# Print results.
+for row in df.itertuples():
+    st.write(f"{row.expert} has a :{row.project}:")
 
 
 # Инициализация st.session_state
