@@ -3,3 +3,4 @@ pandas
 pyecharts
 streamlit_echarts
 gspread
+git+https://github.com/streamlit/gsheets-connection
