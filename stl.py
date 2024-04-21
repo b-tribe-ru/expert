@@ -463,12 +463,12 @@ if st.session_state.current_question >= len(questions):
 
     if st.button('Опубликовать результат оценки проекта'):
         
-        # access_token = "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" 
+        access_token = "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" 
 
-        # gh = Github(access_token)
+        gh = Github(access_token)
 
-        # for repo in gh.get_user().get_repos():
-            
+        for repo in gh.get_user().get_repos():
+            st.write(repo)    
 
         st.write('Подключение установлено...')
         g = Github("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")
