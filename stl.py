@@ -463,7 +463,7 @@ if st.session_state.current_question >= len(questions):
 
     if st.button('Опубликовать результат оценки проекта'):
         
-        access_token = "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" 
+        access_token = "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" 
 
         gh = Github(access_token)
 
