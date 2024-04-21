@@ -458,62 +458,7 @@ if st.session_state.current_question >= len(questions):
     # href = f'<a href="data:text/plain;charset=UTF-8,{data_save}" download="{reference}.txt">Скачать результат оценки проекта</a> ({reference}.txt)'
     # st.markdown(href, unsafe_allow_html=True)
 
-    #st.download_button(label="Скачать результат оценки проекта", data=data_save, file_name=reference)
+    st.download_button(label="Скачать результат оценки проекта", data=data_save, file_name=reference)
 
 
-    if st.button('Опубликовать результат оценки проекта'):
-        
-        access_token = "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" 
-
-        gh = Github(access_token)
-
-        for repo in gh.get_user().get_repos():
-            st.write(repo)    
-
-        st.write('Подключение установлено...')
-        g = Github("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")
-
-        with open(reference + ".csv", "w") as file:
-            file.write(data_save)
-        st.write('Файл подготовлен...')
-        # for personal repo
-        repo = g.get_user().get_repo('expert')
-
-        all_files = []
-        contents = repo.get_contents("")
-        #print('contents')
-        #print(contents)
-
-        file_list = [
-        reference+'.csv',
-        ]
-        file_names = [
-        reference+'.csv',
-        ]
-        commit_message = 'expert opinion'
-        master_ref = repo.get_git_ref('heads/main')
-        master_sha = master_ref.object.sha
-        base_tree = repo.get_git_tree(master_sha)
-        element_list = list()
-        st.write('Производится публикация...')
-
-        # Define the subdirectory path
-        subdirectory_path = 'expert_logs/'
-
-
-
-        for i, entry in enumerate(file_list):
-            with open(entry) as input_file:
-                data = input_file.read()
-            if entry.endswith('.png'): # images must be encoded
-                data = base64.b64encode(data)
-            file_path_in_repo = subdirectory_path + file_names[i]
-            element = InputGitTreeElement(file_path_in_repo, '100644', 'blob', data)
-            element_list.append(element)
-
-        tree = repo.create_git_tree(element_list, base_tree)
-        
-        parent = repo.get_git_commit(master_sha)
-        commit = repo.create_git_commit(commit_message, tree, [parent])
-        master_ref.edit(commit.sha)
-        st.write('Результат опубликован успешно в ' + str(datetime.now()))
+   
