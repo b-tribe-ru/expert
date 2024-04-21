@@ -458,7 +458,7 @@ if st.session_state.current_question >= len(questions):
     # href = f'<a href="data:text/plain;charset=UTF-8,{data_save}" download="{reference}.txt">Скачать результат оценки проекта</a> ({reference}.txt)'
     # st.markdown(href, unsafe_allow_html=True)
 
-    st.download_button(label="Скачать результат оценки проекта", data=data_save, file_name=reference)
+    st.download_button(label="Скачать результат оценки проекта", data=data_save, file_name=reference + '.txt')
 
 
    
