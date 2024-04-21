@@ -2,9 +2,14 @@ import streamlit as st
 import pandas as pd
 
 from pyecharts import options as opts
-
 from pyecharts.charts import Graph, Line
 from streamlit_echarts import st_pyecharts, st_echarts
+from datetime import datetime
+from github import Github
+import base64
+
+from github import InputGitTreeElement
+
 
 
 from PIL import Image
@@ -21,6 +26,18 @@ st.set_page_config(
     }
 )
 st.image(image, caption=None, use_column_width=None, clamp=False, channels="RGB", output_format="auto")
+
+primaryColor = "lightgray"
+s = f"""
+<style>
+div.stButton > button:first-child {{ border: 2px solid {primaryColor}; border-radius:3px 3px 3px 3px; background-color: white ; color:dimgray;}}
+div.stButton > button:hover {{ border-inline-start: solid; writing-mode: horizontal-tb;   background-color: lightblue;    color:black;    }}
+</style>
+"""
+st.markdown(s, unsafe_allow_html=True)
+
+
+
 
 # Инициализация st.session_state
 if "current_question" not in st.session_state:
@@ -64,15 +81,18 @@ def display_question_page(question, options, slider_ranges):
     #selected_option = st.radio(label="", options=options, key="selected_option")
     #slider_range = slider_ranges[options.index(selected_option)]
     inputuser = st.session_state.slider_value
+    st.markdown("""<hr style="height:1px;border:none;color:white;background-color:lightgray;" /> """, unsafe_allow_html=True)
+   
     if slider_range[0] != slider_range[1]:
         st.session_state.slider_value = st.slider(label="Выберите количество баллов, которым соответствует проект", min_value=slider_range[0], max_value=slider_range[1], value=slider_range[0], step=1)
         inputuser = st.session_state.slider_value
     else:
         st.write("Для этого варианта присваивается значение: " + str(slider_range[0]) + " баллов")
         inputuser = slider_range[0]
-
-    # if selected_option:
-    #     st.markdown(f"<span style='color:gray;'>Вы выбрали: {selected_option}</span>", unsafe_allow_html=True)
+   
+    if st.session_state.selected_option:
+        asdf = st.session_state.selected_option[0:150] + "..."
+        st.markdown(f"<div align='justify'>Вы выбрали: {asdf}</div></span>", unsafe_allow_html=True)
 
     if st.button("Перейти к следующему вопросу"):
         st.session_state.current_question += 1
@@ -87,7 +107,7 @@ def display_question_page(question, options, slider_ranges):
                 window.scrollTo(0, 0);
             </script>
         """, unsafe_allow_html=True)
-        st.experimental_rerun()
+        st.rerun()
 # Список вопросов и вариантов ответа
 questions = [
     {
@@ -211,7 +231,7 @@ if st.session_state.current_question >= len(questions):
     llist0 = df.iloc[0:9, 0]
     llist1 = df.iloc[0:9, 1]
     
-    st.header("Суммарные показатели проекта")
+    st.header("Суммарные показатели проекта:")
     
     c = (
         Line()
@@ -225,7 +245,7 @@ if st.session_state.current_question >= len(questions):
     dddd = llist.to_numpy()
 
    
-    st.header("Граф проекта")
+    st.header("Граф проекта:")
     mn = 70
     nodes = [
     {"name": "Важность", "symbolSize": int(dddd[0]/20*mn)},
@@ -319,8 +339,7 @@ if st.session_state.current_question >= len(questions):
 
     st_echarts(options=options, height="400px")
 
-    st.header("Оценка проекта:")
-   
+    
     option = {
         "title": {"text": ""},
         "legend": {"data": ["Проект", "Диплом", "Сертификат"]},
@@ -369,6 +388,7 @@ if st.session_state.current_question >= len(questions):
     [dddd[2], dddd[5], dddd[8]]
     ]
 
+    
      # Вычисляем сумму всех значений в массиве
     total_sum = sum(int(cell) for row in data for cell in row)
     # Вычисляем процентное отношение суммы к числу 180
@@ -381,24 +401,119 @@ if st.session_state.current_question >= len(questions):
             html_table += f"<td>{cell}</td>"
         html_table += "</tr>"
     html_table += "</table>"
+    
+    html_table = "<table>"
+    html_table += "<tr>"
+    html_table += f"<td>{1}</td>"
+    html_table += f"<td>{2}</td>"
+    html_table += f"<td>{3}</td>"
+    html_table += f"<td>{4}</td>"
+    html_table += f"<td>{5}</td>"
+    html_table += f"<td>{6}</td>"
+    html_table += f"<td>{7}</td>"
+    html_table += f"<td>{8}</td>"
+    html_table += f"<td>{9}</td>"
+    html_table += "</tr>"
+    html_table += "<tr>"
+    html_table += f"<td>{dddd[0]}</td>"
+    html_table += f"<td>{dddd[1]}</td>"
+    html_table += f"<td>{dddd[2]}</td>"
+    html_table += f"<td>{dddd[3]}</td>"
+    html_table += f"<td>{dddd[4]}</td>"
+    html_table += f"<td>{dddd[5]}</td>"
+    html_table += f"<td>{dddd[6]}</td>"
+    html_table += f"<td>{dddd[7]}</td>"
+    html_table += f"<td>{dddd[8]}</td>"
+    html_table += "</tr>"
+    html_table += "</table>" 
+    
 
+    
     # Добавляем сумму в таблицу
-    html_table += f"<p>Сумма всех значений: {total_sum} балла(ов) ({(percentage):.2f}%)</p>"
+    html_table += f"<p><div align='justify'>Сумма всех значений: {total_sum} балла(ов) ({(percentage):.2f}%)</div></p>"
 
     # Выводим HTML-таблицу
     st.markdown(html_table, unsafe_allow_html=True)
 
+    st.markdown("""<hr style="height:2px;border:none;color:white;background-color:lightgray;" /> """, unsafe_allow_html=True)
+
+
+
     # Создаем DataFrame из данных
-    df = pd.DataFrame(data, columns=["1", "2", "3"])
+    #df = pd.DataFrame(data, columns=["1", "2", "3"])
 
     # Добавляем кнопку для загрузки CSV-файла
-    username = st.text_input('Эксперт:')
+    username = st.text_input('Эксперт (фамилия, инициалы):')
     project = st.text_input('Название проекта: ')
+    verdikt = st.text_input('Заключение эксперта: ')
+   
+    data_save = username + ',' + project+ ',' + str(dddd[0])+ ',' + str(dddd[1])+ ',' + str(dddd[2])+ ',' + str(dddd[3])+ ',' + str(dddd[4])+ ',' +str(dddd[5])+ ',' + str(dddd[6])+ ',' + str(dddd[7])+ ',' + str(dddd[8])+ ',' +str(total_sum)+ ',' +str(percentage) + ',' + str(verdikt)
+
     
-    csv = df.to_csv(index=False).encode('utf-8')
-    st.download_button(
-        label="Скачать данные в CSV",
-        data=csv,
-        file_name=username + ' ' + project + '.csv',
-        mime='text/csv',
-    )
+
+    reference = str(datetime.now().date()) + ' ' + str(username) + ' ' + str(project) 
+    
+    
+
+    # href = f'<a href="data:text/plain;charset=UTF-8,{data_save}" download="{reference}.txt">Скачать результат оценки проекта</a> ({reference}.txt)'
+    # st.markdown(href, unsafe_allow_html=True)
+
+    #st.download_button(label="Скачать результат оценки проекта", data=data_save, file_name=reference)
+
+
+    if st.button('Опубликовать результат оценки проекта'):
+        
+        # access_token = "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" 
+
+        # gh = Github(access_token)
+
+        # for repo in gh.get_user().get_repos():
+            
+
+        st.write('Подключение установлено...')
+        g = Github("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")
+
+        with open(reference + ".csv", "w") as file:
+            file.write(data_save)
+        st.write('Файл подготовлен...')
+        # for personal repo
+        repo = g.get_user().get_repo('expert')
+
+        all_files = []
+        contents = repo.get_contents("")
+        #print('contents')
+        #print(contents)
+
+        file_list = [
+        reference+'.csv',
+        ]
+        file_names = [
+        reference+'.csv',
+        ]
+        commit_message = 'expert opinion'
+        master_ref = repo.get_git_ref('heads/main')
+        master_sha = master_ref.object.sha
+        base_tree = repo.get_git_tree(master_sha)
+        element_list = list()
+        st.write('Производится публикация...')
+
+        # Define the subdirectory path
+        subdirectory_path = 'expert_logs/'
+
+
+
+        for i, entry in enumerate(file_list):
+            with open(entry) as input_file:
+                data = input_file.read()
+            if entry.endswith('.png'): # images must be encoded
+                data = base64.b64encode(data)
+            file_path_in_repo = subdirectory_path + file_names[i]
+            element = InputGitTreeElement(file_path_in_repo, '100644', 'blob', data)
+            element_list.append(element)
+
+        tree = repo.create_git_tree(element_list, base_tree)
+        
+        parent = repo.get_git_commit(master_sha)
+        commit = repo.create_git_commit(commit_message, tree, [parent])
+        master_ref.edit(commit.sha)
+        st.write('Результат опубликован успешно в ' + str(datetime.now()))
