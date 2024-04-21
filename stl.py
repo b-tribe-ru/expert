@@ -107,7 +107,7 @@ def display_question_page(question, options, slider_ranges):
                 window.scrollTo(0, 0);
             </script>
         """, unsafe_allow_html=True)
-        #st.rerun()
+        st.experimental_rerun()
 # Список вопросов и вариантов ответа
 questions = [
     {
